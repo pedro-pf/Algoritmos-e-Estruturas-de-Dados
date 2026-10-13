@@ -1,26 +1,3 @@
-/*
- * Complexidade de Algoritmos: Busca e Ordenação com raylib
- * ---------------------------------------------------------------
- * Evolução da atividade6: agora o programa mantém um vetor dinâmico
- * de placares (struct Placar) e permite comparar, na prática, o
- * CUSTO (número de comparações) de diferentes algoritmos de busca
- * e ordenação -- o conceito central de complexidade de algoritmos.
- *
- * O vetor de placares é desenhado como barras verticais (altura =
- * pontuação), permitindo enxergar visualmente o efeito da ordenação.
- *
- * Conceitos praticados:
- *   - complexidade de algoritmos (contagem de comparações/trocas)
- *   - ordenação: bubble sort, O(n²) no pior caso
- *   - busca sequencial, O(n), funciona em vetor desordenado
- *   - busca binária, O(log n), exige o vetor ordenado
- *   - reaproveita ponteiros, alocação dinâmica e struct das
- *     atividades anteriores
- *
- * Compilar (Linux, com raylib instalada):
- *   gcc atividade7.c -o atividade7 -lraylib -lm -lpthread -ldl -lrt -lX11
- */
-
 #include "raylib.h"
 #include <stdlib.h>
 #include <time.h>
@@ -47,7 +24,6 @@ Placar *criarPlacares(int quantidade) {
     return placares;
 }
 
-/* ---- ordenação: bubble sort contando comparações e trocas ---- */
 void ordenarBubbleSort(Placar *vetor, int n, long *comparacoes, long *trocas) {
     *comparacoes = 0;
     *trocas = 0;
@@ -65,7 +41,6 @@ void ordenarBubbleSort(Placar *vetor, int n, long *comparacoes, long *trocas) {
     }
 }
 
-/* ---- ordenação: insertion sort contando comparações e deslocamentos ---- */
 void ordenarInsertionSort(Placar *vetor, int n, long *comparacoes, long *trocas) {
     *comparacoes = 0;
     *trocas = 0;
@@ -95,7 +70,6 @@ void copiarPlacares(Placar *destino, Placar *origem, int n) {
     }
 }
 
-/* ---- busca sequencial: O(n), funciona em qualquer ordem ---- */
 int buscaSequencial(Placar *vetor, int n, int alvo, long *comparacoes) {
     *comparacoes = 0;
     for (int i = 0; i < n; i++) {
@@ -105,7 +79,6 @@ int buscaSequencial(Placar *vetor, int n, int alvo, long *comparacoes) {
     return -1;
 }
 
-/* ---- busca binária: O(log n), exige vetor ordenado ---- */
 int buscaBinaria(Placar *vetor, int n, int alvo, long *comparacoes) {
     *comparacoes = 0;
     int inicio = 0, fim = n - 1;
@@ -158,7 +131,7 @@ int main(void) {
 
     while (!WindowShouldClose()) {
 
-        if (IsKeyPressed(KEY_O)) { // Ordena com bubble sort, contando comparações e trocas
+        if (IsKeyPressed(KEY_O)) {
             copiarPlacares(placares, placaresOriginais, TOTAL_PLACARES);
 
             double inicio = GetTime();
@@ -173,7 +146,7 @@ int main(void) {
                                            comparacoesBubble, trocasBubble, tempoBubbleMs));
         }
 
-        if (IsKeyPressed(KEY_I)) { // Ordena a mesma sequência com insertion sort
+        if (IsKeyPressed(KEY_I)) {
             copiarPlacares(placares, placaresOriginais, TOTAL_PLACARES);
             ordenarInsertionSort(placares, TOTAL_PLACARES, &comparacoesInsertion, &trocasInsertion);
 
@@ -184,18 +157,18 @@ int main(void) {
                                            comparacoesInsertion, trocasInsertion));
         }
 
-        if (IsKeyPressed(KEY_N)) { // Sorteia um novo alvo dentre os valores existentes
+        if (IsKeyPressed(KEY_N)) {
             alvo = placares[GetRandomValue(0, TOTAL_PLACARES - 1)].pontuacao;
             indiceEncontrado = -1;
             TextCopy(resultado, TextFormat("Novo alvo sorteado: %d", alvo));
         }
 
-        if (IsKeyPressed(KEY_Q)) { // Busca sequencial: funciona ordenado ou não, custo O(n)
+        if (IsKeyPressed(KEY_Q)) {
             indiceEncontrado = buscaSequencial(placares, TOTAL_PLACARES, alvo, &comparacoes);
             TextCopy(resultado, TextFormat("Busca sequencial por %d: %ld comparacoes (O(n))", alvo, comparacoes));
         }
 
-        if (IsKeyPressed(KEY_W)) { // Busca binária: só é confiável se o vetor estiver ordenado
+        if (IsKeyPressed(KEY_W)) {
             if (!ordenado) {
                 TextCopy(resultado, "Ordene primeiro com O -- busca binaria exige vetor ordenado!");
             } else {
